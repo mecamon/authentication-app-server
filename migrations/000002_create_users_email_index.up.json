@@ -1,0 +1,13 @@
+[{
+  "createIndexes": "users",
+  "indexes": [
+    {
+      "key": {
+        "email": 1
+      },
+      "name": "unique_users_email",
+      "unique": true
+    }
+  ],
+  "writeConcern": { "w": "majority" }
+}]

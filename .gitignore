@@ -1,0 +1,4 @@
+run.sh
+authentication-app
+*.yml
+coverage.out
