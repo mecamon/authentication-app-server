@@ -1,9 +1,9 @@
-#Authentication App
+# Authentication App
 
-##Description
+## Description
 This is the api created to fulfill for the authentication app challenge in the [devchallenges](hhtp://devchallenges.io)
 
-##External packages
+## External packages
 The project uses the following external packages
 
 - [chi router](https://go-chi.io/#/README)
