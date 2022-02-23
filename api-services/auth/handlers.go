@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/authentication-app-server/api-services/repository"
 	"github.com/authentication-app-server/helpers"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
@@ -46,7 +47,7 @@ func (m *Handlers) login(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	signedToken, err := helpers.GenerateToken(auth.Email)
+	signedToken, err := helpers.GenerateToken(primitive.ObjectID.Hex(result.ID), result.Email)
 	tokenMap := map[string]string{"token": signedToken}
 
 	hasError, out := helpers.CustomResponse(tokenMap, errorMap)
@@ -75,7 +76,7 @@ func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 
 	errorMap := auth.EvaluateNewUserCredentials()
 	hashed, _ := helpers.HashPassword(auth.Password)
-	result, err := m.AuthRepo.Register(auth.Email, string(hashed))
+	insertedID, err := m.AuthRepo.Register(auth.Email, string(hashed))
 	if err != nil {
 		if strings.Contains(err.Error(), "E11000") {
 			errorMap.Message["email"] = "inserted email address is already taken"
@@ -83,7 +84,13 @@ func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	resultMap := map[string]string{"inserted_id": result}
+	signedToken, err := helpers.GenerateToken(insertedID, auth.Email)
+
+	resultMap := map[string]string{
+		"token":       signedToken,
+		"inserted_id": insertedID,
+	}
+
 	hasError, out := helpers.CustomResponse(resultMap, errorMap)
 
 	if !hasError {

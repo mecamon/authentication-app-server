@@ -47,3 +47,26 @@ func TestValidPassword(t *testing.T) {
 		}
 	}
 }
+
+var telephoneTests = []struct {
+	testName       string
+	telephone      string
+	expectedResult bool
+}{
+	{"Phone number lower than 10", "123456789", false},
+	{"Phone number with letters", "12345678daf", false},
+	{"Valid phone number", "12014326578", true},
+}
+
+func TestValidTelephone(t *testing.T) {
+
+	for _, tt := range telephoneTests {
+		t.Log(tt.testName)
+		{
+			output := ValidTelephone(tt.telephone)
+			if output != tt.expectedResult {
+				t.Errorf("Got %v but expected %v", output, tt.expectedResult)
+			}
+		}
+	}
+}

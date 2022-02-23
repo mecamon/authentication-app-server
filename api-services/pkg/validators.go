@@ -25,3 +25,18 @@ func ValidPassword(password string) bool {
 
 	return output1 && output2 && output3 && output4
 }
+
+func ValidTelephone(telephone string) bool {
+
+	if len(telephone) < 10 {
+		return false
+	}
+
+	regx := regexp.MustCompile("[^0-9]")
+
+	if regx.MatchString(telephone) {
+		return false
+	}
+
+	return true
+}
