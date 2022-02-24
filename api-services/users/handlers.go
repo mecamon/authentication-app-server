@@ -4,6 +4,7 @@ import (
 	"github.com/authentication-app-server/api-services/models"
 	"github.com/authentication-app-server/api-services/repository"
 	"github.com/authentication-app-server/helpers"
+	"github.com/authentication-app-server/services"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
@@ -54,11 +55,20 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	errorMap = EvaluateEditUserCredentials(user)
 	file, fileHeader, err := r.FormFile("file")
 
+	//TODO reformat to a function in the domain
 	if file != nil {
+		defer file.Close()
+
 		contentType = fileHeader.Header.Get("Content-Type")
 		fileSize = fileHeader.Size
 
 		errorMap = EvaluateFile(contentType, fileSize, errorMap)
+
+		imageURL, err := services.UploadImage(file, ID)
+		if err != nil {
+			errorMap.Message["file"] = err.Error()
+		}
+
 		if len(errorMap.Message) > 0 {
 			_, output := helpers.CustomResponse(nil, errorMap)
 
@@ -67,11 +77,13 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 			w.Write(output)
 			return
 		}
+
+		user.PhotoURL = imageURL
 	}
 
 	hashed, err := helpers.HashPassword(user.Password)
 	user.Password = string(hashed)
-	
+
 	modified, err := m.UserRepo.UpdateUser(ID, user)
 	if err != nil {
 		if strings.Contains(err.Error(), "E11000") {

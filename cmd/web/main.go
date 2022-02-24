@@ -1,7 +1,9 @@
 package main
 
 import (
+	"flag"
 	"github.com/authentication-app-server/db"
+	"github.com/authentication-app-server/services"
 	"log"
 	"net/http"
 )
@@ -9,6 +11,17 @@ import (
 const port = ":8080"
 
 func main() {
+	var (
+		cloud    string
+		cloudKey string
+		secret   string
+	)
+
+	flag.StringVar(&cloud, "cloud", "", "cloud name")
+	flag.StringVar(&cloudKey, "cloud-key", "", "cloud API key")
+	flag.StringVar(&secret, "secret", "", "cloud API secret")
+
+	flag.Parse()
 
 	dbConn, err := db.ConnectToClient()
 	if err != nil {
@@ -25,6 +38,11 @@ func main() {
 	db.PingBD(dbConn)
 
 	router := makeRouter(dbConn)
+
+	err = services.NewCloudinaryInstance(cloud, cloudKey, secret)
+	if err != nil {
+		log.Println("Error creating cloudinary instance", err)
+	}
 
 	log.Println("Running server in port", port)
 	err = http.ListenAndServe(port, router)
