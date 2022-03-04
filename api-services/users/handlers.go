@@ -71,10 +71,7 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 
 		if len(errorMap.Message) > 0 {
 			_, output := helpers.CustomResponse(nil, errorMap)
-
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(output)
+			helpers.ResGenerator(w, http.StatusBadRequest, output)
 			return
 		}
 
@@ -90,9 +87,7 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 			errorMap.Message["email"] = "inserted email address is already taken"
 		}
 		_, output := helpers.CustomResponse(nil, errorMap)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusConflict)
-		w.Write(output)
+		helpers.ResGenerator(w, http.StatusConflict, output)
 		return
 	}
 
@@ -101,8 +96,6 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, output := helpers.CustomResponse(modifiedCountMap, errorMap)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(output)
+	helpers.ResGenerator(w, http.StatusOK, output)
+	return
 }

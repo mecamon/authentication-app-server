@@ -27,10 +27,8 @@ func NewHandlers(conn *mongo.Client, dbName string) *Handlers {
 func (m *Handlers) login(w http.ResponseWriter, r *http.Request) {
 
 	var (
-		auth       Auth
-		out        []byte
-		errorMap   helpers.ErrorsMap
-		statusCode int
+		auth     Auth
+		errorMap helpers.ErrorsMap
 	)
 
 	err := json.NewDecoder(r.Body).Decode(&auth)
@@ -45,29 +43,20 @@ func (m *Handlers) login(w http.ResponseWriter, r *http.Request) {
 				"credentials": "incorrect email or password",
 			},
 		}
+		_, output := helpers.CustomResponse(nil, errorMap)
+		helpers.ResGenerator(w, http.StatusBadRequest, output)
+		return
 	}
 
 	signedToken, err := helpers.GenerateToken(primitive.ObjectID.Hex(result.ID), result.Email)
 	tokenMap := map[string]string{"token": signedToken}
 
-	hasError, out := helpers.CustomResponse(tokenMap, errorMap)
-
-	if !hasError {
-		statusCode = http.StatusOK
-	} else {
-		if statusCode == 0 {
-			statusCode = http.StatusBadRequest
-		}
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	w.Write(out)
+	_, output := helpers.CustomResponse(tokenMap, errorMap)
+	helpers.ResGenerator(w, http.StatusOK, output)
 }
 
 func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 	var auth Auth
-	var statusCode int
 
 	err := json.NewDecoder(r.Body).Decode(&auth)
 	if err != nil {
@@ -75,12 +64,21 @@ func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errorMap := auth.EvaluateNewUserCredentials()
+
+	if len(errorMap.Message) > 0 {
+		_, output := helpers.CustomResponse(nil, errorMap)
+		helpers.ResGenerator(w, http.StatusBadRequest, output)
+		return
+	}
+
 	hashed, _ := helpers.HashPassword(auth.Password)
 	insertedID, err := m.AuthRepo.Register(auth.Email, string(hashed))
 	if err != nil {
 		if strings.Contains(err.Error(), "E11000") {
 			errorMap.Message["email"] = "inserted email address is already taken"
-			statusCode = 409
+			_, output := helpers.CustomResponse(nil, errorMap)
+			helpers.ResGenerator(w, http.StatusConflict, output)
+			return
 		}
 	}
 
@@ -91,17 +89,6 @@ func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 		"inserted_id": insertedID,
 	}
 
-	hasError, out := helpers.CustomResponse(resultMap, errorMap)
-
-	if !hasError {
-		statusCode = http.StatusCreated
-	} else {
-		if statusCode == 0 {
-			statusCode = http.StatusBadRequest
-		}
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	w.Write(out)
+	_, output := helpers.CustomResponse(resultMap, errorMap)
+	helpers.ResGenerator(w, http.StatusCreated, output)
 }
