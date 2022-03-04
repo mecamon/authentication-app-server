@@ -40,3 +40,16 @@ func UploadImage(file interface{}, filename string) (string, error) {
 
 	return uploadResult.SecureURL, nil
 }
+
+func DeleteImage(publicID string) (string, error) {
+	ctx := context.Background()
+	resp, err := Cloudinary.Upload.Destroy(ctx, uploader.DestroyParams{
+		PublicID:     publicID,
+		ResourceType: "image"})
+
+	if err != nil {
+		return "", err
+	}
+
+	return resp.Result, nil
+}
