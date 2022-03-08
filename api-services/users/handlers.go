@@ -98,3 +98,21 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	helpers.ResGenerator(w, http.StatusOK, output)
 	return
 }
+
+func (m *Handlers) userInfo(w http.ResponseWriter, r *http.Request) {
+
+	errorMap := helpers.ErrorsMap{
+		Success: false,
+		Message: map[string]string{},
+	}
+
+	ID := r.Context().Value("ID").(string)
+
+	userData, err := m.UserRepo.UserInfo(ID)
+	if err != nil {
+		errorMap.Message["user"] = "error getting user information"
+	}
+
+	_, output := helpers.CustomResponse(userData, errorMap)
+	helpers.ResGenerator(w, http.StatusOK, output)
+}

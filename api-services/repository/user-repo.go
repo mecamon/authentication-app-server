@@ -45,3 +45,35 @@ func (u *UserRepoImp) UpdateUser(ID string, validUser models.User) (int64, error
 
 	return result.ModifiedCount, nil
 }
+
+func (u *UserRepoImp) UserInfo(ID string) (interface{}, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+
+	id, _ := primitive.ObjectIDFromHex(ID)
+	filter := bson.D{{"_id", id}}
+
+	userFromDB := models.User{}
+
+	err := u.Database.Collection("users").FindOne(ctx, filter).Decode(&userFromDB)
+	if err != nil {
+		return nil, err
+	}
+
+	var userSecureData = struct {
+		Name      string `bson:"name,omitempty" json:"name"`
+		Bio       string `bson:"bio,omitempty" json:"bio"`
+		Email     string `bson:"email,omitempty" json:"email"`
+		Telephone string `bson:"telephone,omitempty" json:"telephone"`
+		PhotoURL  string `bson:"photo_url,omitempty" json:"photoURL"`
+	}{
+		Name:      userFromDB.Name,
+		Bio:       userFromDB.Bio,
+		Email:     userFromDB.Email,
+		Telephone: userFromDB.Telephone,
+		PhotoURL:  userFromDB.PhotoURL,
+	}
+
+	return userSecureData, nil
+}

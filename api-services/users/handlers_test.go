@@ -67,11 +67,31 @@ func TestUpdateUserInfo(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func createTestUsers(authRepo repository.AuthRepo) {
 	passwordHashed, _ := helpers.HashPassword(userTestStruct[0].password)
 	authRepo.Register(userTestStruct[0].email, string(passwordHashed))
 	authRepo.Register(userTestStruct[1].email, string(passwordHashed))
+}
+
+func TestUserInfo(t *testing.T) {
+
+	t.Log("get-user-info")
+	{
+		authRepo := repository.NewAuthRepo(mongoTestClient, mongoTestDBName)
+
+		result, _ := authRepo.Login("userinfotest@mail.com", "Password1234")
+		tokenString, _ := helpers.GenerateToken(primitive.ObjectID.Hex(result.ID), result.Email)
+
+		req := httptest.NewRequest(http.MethodGet, "/api/users/info", nil)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", tokenString)
+
+		rr := httptest.NewRecorder()
+		testMainRouter.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			t.Errorf("Expected statusCode %d but got %d", http.StatusOK, rr.Code)
+		}
+	}
 }

@@ -10,4 +10,5 @@ type AuthRepo interface {
 
 type UserRepo interface {
 	UpdateUser(ID string, validUser models.User) (int64, error)
+	UserInfo(ID string) (interface{}, error)
 }
