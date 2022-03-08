@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/authentication-app-server/api-services/auth"
 	"github.com/authentication-app-server/db"
 	"github.com/authentication-app-server/services"
 	"log"
@@ -20,7 +21,8 @@ func main() {
 	flag.StringVar(&cloud, "cloud", "", "cloud name")
 	flag.StringVar(&cloudKey, "cloud-key", "", "cloud API key")
 	flag.StringVar(&secret, "secret", "", "cloud API secret")
-
+	flag.StringVar(&auth.ClientID, "client-id", "", "cloud app id")
+	flag.StringVar(&auth.ClientSecret, "client-secret", "", "Client secret key")
 	flag.Parse()
 
 	dbConn, err := db.ConnectToClient()

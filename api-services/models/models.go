@@ -11,11 +11,18 @@ type User struct {
 	Bio       string              `bson:"bio,omitempty" json:"bio"`
 	Email     string              `bson:"email,omitempty" json:"email"`
 	Password  string              `bson:"password,omitempty" json:"password"`
+	GithubID  int                 `bson:"github_id,omitempty" json:"github_id"`
 	Telephone string              `bson:"telephone,omitempty" json:"telephone"`
 	PhotoURL  string              `bson:"photo_url,omitempty" json:"photoURL"`
 	IsActive  bool                `bson:"is_active,omitempty" json:"is_active"`
 	CreatedAt primitive.Timestamp `bson:"created_at,omitempty" json:"created_at"`
 	UpdatedAt primitive.Timestamp `bson:"updated_at,omitempty" json:"updated_at"`
+}
+
+type GithubUser struct {
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatar_url"`
 }
 
 type CustomClaims struct {

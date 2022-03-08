@@ -55,7 +55,6 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	errorMap = EvaluateEditUserCredentials(user)
 	file, fileHeader, err := r.FormFile("file")
 
-	//TODO reformat to a function in the domain
 	if file != nil {
 		defer file.Close()
 

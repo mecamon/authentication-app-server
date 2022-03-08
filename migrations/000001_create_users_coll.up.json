@@ -3,15 +3,19 @@
   "validator": {
     "$jsonSchema": {
       "bsonType": "object",
-      "required": ["email", "password", "is_active"],
+      "required": ["is_active"],
       "properties": {
         "email": {
           "bsonType": "string",
-          "description": "must be a string and required"
+          "description": "must be a string"
         },
         "password": {
           "bsonType": "string",
-          "description": "must be a string and required"
+          "description": "must be a string"
+        },
+        "github_id": {
+          "bsonType": "int",
+          "description": "must be an int"
         },
         "is_active": {
           "bsonType": "bool",
