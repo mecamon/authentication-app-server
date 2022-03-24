@@ -11,3 +11,4 @@ The project uses the following external packages
 - [golang-migrate/migrate](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md)
 - [golang-jwt/jwt](https://github.com/golang-jwt/jwt)
 - [Cloudinary go driver](https://cloudinary.com/documentation/go_quick_start#landingpage)
+- [nicksnyder i18n](https://github.com/nicksnyder/go-i18n)
