@@ -56,7 +56,7 @@ func TestUpdateUserInfo(t *testing.T) {
 			writer.WriteField("bio", tt.bio)
 			writer.Close()
 
-			req := httptest.NewRequest(http.MethodPost, "/api/users/update", body)
+			req := httptest.NewRequest(http.MethodPut, "/api/users/update", body)
 			req.Header.Set("Content-Type", writer.FormDataContentType())
 			req.Header.Set("Authorization", tokenString)
 

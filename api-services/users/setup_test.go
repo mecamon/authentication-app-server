@@ -44,7 +44,7 @@ func createMainRouter(mongoClient *mongo.Client, dbName string) *chi.Mux {
 
 	NewHandlers(mongoClient, dbName)
 
-	router.Post("/update", handlers.updateUserInfo)
+	router.Put("/update", handlers.updateUserInfo)
 	router.Get("/info", handlers.userInfo)
 	mainRouter.Mount("/api/users", router)
 

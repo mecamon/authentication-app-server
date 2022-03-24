@@ -197,7 +197,7 @@ func (m *Handlers) loginWithGithub(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		errorMap.Message["login"] = "Error login user"
 		_, output := helpers.CustomResponse(nil, errorMap)
-		helpers.ResGenerator(w, http.StatusCreated, output)
+		helpers.ResGenerator(w, http.StatusBadRequest, output)
 		return
 	}
 

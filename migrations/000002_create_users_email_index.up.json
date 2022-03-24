@@ -6,7 +6,10 @@
         "email": 1
       },
       "name": "unique_users_email",
-      "unique": true
+      "unique": true,
+      "partialFilterExpression": {
+        "email": {"$type": "string"}
+      }
     }
   ],
   "writeConcern": { "w": "majority" }

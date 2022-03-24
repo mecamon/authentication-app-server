@@ -7,9 +7,10 @@ import (
 
 func Routes() *chi.Mux {
 
+	//TODO remove photo service
 	router := chi.NewRouter()
 	router.Use(middlewares.TokenValidation)
-	router.Post("/update", handlers.updateUserInfo)
+	router.Put("/update", handlers.updateUserInfo)
 	router.Get("/info", handlers.userInfo)
 
 	return router
