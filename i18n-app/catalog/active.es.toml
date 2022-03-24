@@ -1,0 +1,55 @@
+[PersonCats]
+description = "The number of cats a person has"
+hash = "sha1-f937a0e05e19bfe6cd70937c980eaf1f9832f091"
+one = "{{.Name}} tiene {{.Count}} gato."
+other = "{{.Name}} tiene {{.Count}} gatos."
+
+[IncorrectCredentials]
+description = "Error for wrong email or password"
+one = "email o contraseña incorrecta."
+other = "email o contraseña incorrecta."
+
+[EmailAddressTaken]
+description = "Error message for unique email address"
+one = "el correo ingresado ya está siendo usado por alguien más."
+other = "el correo ingresado ya está siendo usado por alguien más."
+
+[GenericRegisterError]
+description = "Error for unknown register error"
+one = "error registrando nuevo usuario."
+other = "error registrando nuevo usuario."
+
+[GenericLoginError]
+description = "Error for unknown login error"
+one = "error loggeando usuario."
+other = "error loggeando usuario."
+
+[UserInfoError]
+description = "Error for get user info handler"
+one = "error obteniendo información de usuario."
+other = "error obteniendo información de usuario."
+
+[InvalidEmail]
+description = "Invalid email address error message"
+one = "dirección de correo inválida."
+other = "dirección de correo inválida."
+
+[InvalidPassword]
+description = "Invalid password message"
+one = "la contraseña debe contener al menos uno de estos carateres a-z, A-Z, 0-9 y tener más de 8."
+other = "la contraseña debe contener al menos uno de estos carateres a-z, A-Z, 0-9 y tener más de 8."
+
+[InvalidTelephone]
+description = "Invalid telephone message"
+one = "telefono debe ser mayor o igual a 10 carateres y sólo puede contener números."
+other = "telefono debe ser mayor o igual a 10 carateres y sólo puede contener números."
+
+[WrongImageType]
+description = "Invalid image type message"
+one = "extensión de archivo incorrecta.Sólo son aceptadas jpg, jpeg y png."
+other = "extensión de archivo incorrecta.Sólo son aceptadas jpg, jpeg y png."
+
+[ImageFileTooBig]
+description = "Image size is bigger than allowed"
+one = "el tamaño del archivo no puede ser mayor de {{.Size}} bytes."
+other = "el tamaño del archivo no puede ser mayor de {{.Size}} bytes."

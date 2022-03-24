@@ -1,0 +1,54 @@
+[PersonCats]
+description = "The number of cats a person has"
+one = "{{.Name}} has {{.Count}} cat."
+other = "{{.Name}} has {{.Count}} cats."
+
+[IncorrectCredentials]
+description = "Error for wrong email or password"
+one = "incorrect email or password."
+other = "incorrect email or password."
+
+[EmailAddressTaken]
+description = "Error message for unique email address"
+one = "inserted email address is already taken."
+other = "inserted email address is already taken."
+
+[GenericRegisterError]
+description = "Error for unknown register error"
+one = "error registering new user"
+other = "error registering new user"
+
+[GenericLoginError]
+description = "Error for unknown login error"
+one = "error login user."
+other = "error login user."
+
+[UserInfoError]
+description = "Error for get user info handler"
+one = "error getting user information."
+other = "error getting user information."
+
+[InvalidEmail]
+description = "Invalid email address error message"
+one = "invalid email address."
+other = "invalid email address."
+
+[InvalidPassword]
+description = "Invalid password message"
+one = "Password must least contain one of these a-z, A-Z, 0-9 and be longer than 8 characters."
+other = "Password must least contain one of these a-z, A-Z, 0-9 and be longer than 8 characters."
+
+[InvalidTelephone]
+description = "Invalid telephone message"
+one = "telephone must be longer than 10 and contain only numbers."
+other = "telephone must be longer than 10 and contain only numbers."
+
+[WrongImageType]
+description = "Invalid image type message"
+one = "file extension not allowed. Only jpg, jpeg y png are accepted"
+other = "file extension not allowed. Only jpg, jpeg y png are accepted"
+
+[ImageFileTooBig]
+description = "Image size is bigger than allowed"
+one = "file size can't be higher than {{.Size}} bytes."
+other = "file size can't be higher than {{.Size}} bytes."

@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/authentication-app-server/api-services/pkg"
 	"github.com/authentication-app-server/helpers"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 type Auth struct {
@@ -10,7 +11,7 @@ type Auth struct {
 	Password string `json:"password"`
 }
 
-func (m *Auth) EvaluateNewUserCredentials() helpers.ErrorsMap {
+func (m *Auth) EvaluateNewUserCredentials(locales *i18n.Localizer) helpers.ErrorsMap {
 	errResponse := helpers.ErrorsMap{
 		Success: false,
 		Message: map[string]string{},
@@ -18,12 +19,12 @@ func (m *Auth) EvaluateNewUserCredentials() helpers.ErrorsMap {
 
 	isValidEmail := pkg.ValidEmail(m.Email)
 	if !isValidEmail {
-		errResponse.Message["email"] = "Invalid email address"
+		errResponse.Message["email"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "InvalidEmail"})
 	}
 
 	isValidPassword := pkg.ValidPassword(m.Password)
 	if !isValidPassword {
-		errResponse.Message["password"] = "Password must least contain one of these a-z, A-Z, 0-9 and be longer than 8 characters"
+		errResponse.Message["password"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "InvalidPassword"})
 	}
 
 	return errResponse

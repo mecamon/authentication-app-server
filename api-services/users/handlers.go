@@ -4,7 +4,9 @@ import (
 	"github.com/authentication-app-server/api-services/models"
 	"github.com/authentication-app-server/api-services/repository"
 	"github.com/authentication-app-server/helpers"
+	i18n_app "github.com/authentication-app-server/i18n-app"
 	"github.com/authentication-app-server/services"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
@@ -37,6 +39,9 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 		Message: map[string]string{},
 	}
 
+	lang := r.Header.Get("Accept-Language")
+	locales := i18n_app.GetLocales(lang)
+
 	ID := r.Context().Value("ID").(string)
 
 	err := r.ParseMultipartForm(128)
@@ -52,7 +57,7 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 		Telephone: r.Form.Get("telephone"),
 	}
 
-	errorMap = EvaluateEditUserCredentials(user)
+	errorMap = EvaluateEditUserCredentials(user, locales)
 	file, fileHeader, err := r.FormFile("file")
 
 	if file != nil {
@@ -61,7 +66,7 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 		contentType = fileHeader.Header.Get("Content-Type")
 		fileSize = fileHeader.Size
 
-		errorMap = EvaluateFile(contentType, fileSize, errorMap)
+		errorMap = EvaluateFile(contentType, fileSize, errorMap, locales)
 
 		imageURL, err := services.UploadImage(file, ID)
 		if err != nil {
@@ -83,7 +88,7 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	modified, err := m.UserRepo.UpdateUser(ID, user)
 	if err != nil {
 		if strings.Contains(err.Error(), "E11000") {
-			errorMap.Message["email"] = "inserted email address is already taken"
+			errorMap.Message["email"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "EmailAddressTaken"})
 		}
 		_, output := helpers.CustomResponse(nil, errorMap)
 		helpers.ResGenerator(w, http.StatusConflict, output)
@@ -106,11 +111,14 @@ func (m *Handlers) userInfo(w http.ResponseWriter, r *http.Request) {
 		Message: map[string]string{},
 	}
 
+	lang := r.Header.Get("Accept-Language")
+	locales := i18n_app.GetLocales(lang)
+
 	ID := r.Context().Value("ID").(string)
 
 	userData, err := m.UserRepo.UserInfo(ID)
 	if err != nil {
-		errorMap.Message["user"] = "error getting user information"
+		errorMap.Message["user"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "UserInfoError"})
 	}
 
 	_, output := helpers.CustomResponse(userData, errorMap)

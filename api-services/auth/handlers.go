@@ -6,6 +6,8 @@ import (
 	"github.com/authentication-app-server/api-services/models"
 	"github.com/authentication-app-server/api-services/repository"
 	"github.com/authentication-app-server/helpers"
+	i18napp "github.com/authentication-app-server/i18n-app"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
@@ -37,16 +39,22 @@ func (m *Handlers) login(w http.ResponseWriter, r *http.Request) {
 		errorMap helpers.ErrorsMap
 	)
 
+	lang := r.Header.Get("Accept-Language")
+	locales := i18napp.GetLocales(lang)
+
 	err := json.NewDecoder(r.Body).Decode(&auth)
 
 	result, err := m.AuthRepo.Login(auth.Email, auth.Password)
 	hasAValidPass := helpers.CheckPassword(auth.Password, result.Password)
 
 	if err != nil || !hasAValidPass {
+		incorrectCredentials := locales.MustLocalize(&i18n.LocalizeConfig{
+			MessageID: "IncorrectCredentials",
+		})
 		errorMap = helpers.ErrorsMap{
 			Success: false,
 			Message: map[string]string{
-				"credentials": "incorrect email or password",
+				"credentials": incorrectCredentials,
 			},
 		}
 		_, output := helpers.CustomResponse(nil, errorMap)
@@ -64,12 +72,15 @@ func (m *Handlers) login(w http.ResponseWriter, r *http.Request) {
 func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 	var auth Auth
 
+	lang := r.Header.Get("Accept-Language")
+	locales := i18napp.GetLocales(lang)
+
 	err := json.NewDecoder(r.Body).Decode(&auth)
 	if err != nil {
 		log.Println(err)
 	}
 
-	errorMap := auth.EvaluateNewUserCredentials()
+	errorMap := auth.EvaluateNewUserCredentials(locales)
 
 	if len(errorMap.Message) > 0 {
 		_, output := helpers.CustomResponse(nil, errorMap)
@@ -81,12 +92,12 @@ func (m *Handlers) register(w http.ResponseWriter, r *http.Request) {
 	insertedID, err := m.AuthRepo.Register(auth.Email, string(hashed))
 	if err != nil {
 		if strings.Contains(err.Error(), "E11000") {
-			errorMap.Message["email"] = "inserted email address is already taken"
+			errorMap.Message["email"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "EmailAddressTaken"})
 			_, output := helpers.CustomResponse(nil, errorMap)
 			helpers.ResGenerator(w, http.StatusConflict, output)
 			return
 		}
-		errorMap.Message["register"] = "Error registering new user"
+		errorMap.Message["register"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "GenericRegisterError"})
 		_, output := helpers.CustomResponse(nil, errorMap)
 		helpers.ResGenerator(w, http.StatusBadRequest, output)
 		return
@@ -192,10 +203,13 @@ func (m *Handlers) loginWithGithub(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	lang := r.Header.Get("Accept-Language")
+	locales := i18napp.GetLocales(lang)
+
 	result, err := m.AuthRepo.LoginWithGithub(githubUser)
 	if err != nil {
 		log.Println(err)
-		errorMap.Message["login"] = "Error login user"
+		errorMap.Message["login"] = locales.MustLocalize(&i18n.LocalizeConfig{MessageID: "GenericLoginError"})
 		_, output := helpers.CustomResponse(nil, errorMap)
 		helpers.ResGenerator(w, http.StatusBadRequest, output)
 		return
