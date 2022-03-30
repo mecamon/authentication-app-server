@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const uri = "mongodb://localhost:27017/?maxPoolSize=20&w=majority"
+var uri = "mongodb://localhost:27017/?maxPoolSize=20&w=majority"
 
 type DB struct {
 	Client  *mongo.Client
@@ -39,4 +39,8 @@ func PingBD(db *DB) {
 		panic(err)
 	}
 	fmt.Println("Client ping!!!...")
+}
+
+func SetDbUri(user, password string) {
+	uri = fmt.Sprintf("mongodb+srv://%s:%s@cluster0.io5ut.mongodb.net/authentication?retryWrites=true", user, password)
 }

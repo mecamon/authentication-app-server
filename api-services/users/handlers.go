@@ -58,6 +58,11 @@ func (m *Handlers) updateUserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errorMap = EvaluateEditUserCredentials(user, locales)
+	if len(errorMap.Message) > 0 {
+		_, output := helpers.CustomResponse(nil, errorMap)
+		helpers.ResGenerator(w, http.StatusBadRequest, output)
+		return
+	}
 	file, fileHeader, err := r.FormFile("file")
 
 	if file != nil {

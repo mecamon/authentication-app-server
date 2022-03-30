@@ -14,9 +14,11 @@ const port = ":8080"
 func main() {
 
 	var (
-		cloud    string
-		cloudKey string
-		secret   string
+		cloud      string
+		cloudKey   string
+		secret     string
+		dbUser     string
+		dbPassword string
 	)
 
 	flag.StringVar(&cloud, "cloud", "", "cloud name")
@@ -24,8 +26,13 @@ func main() {
 	flag.StringVar(&secret, "secret", "", "cloud API secret")
 	flag.StringVar(&auth.ClientID, "client-id", "", "cloud app id")
 	flag.StringVar(&auth.ClientSecret, "client-secret", "", "Client secret key")
+	flag.StringVar(&dbUser, "db-user", "", "Db username")
+	flag.StringVar(&dbPassword, "db-password", "", "Db password")
 	flag.Parse()
 
+	if flag.Lookup("test.v") == nil {
+		db.SetDbUri(dbUser, dbPassword)
+	}
 	dbConn, err := db.ConnectToClient()
 	if err != nil {
 		panic(err)
