@@ -41,6 +41,6 @@ func PingBD(db *DB) {
 	fmt.Println("Client ping!!!...")
 }
 
-func SetDbUri(user, password string) {
-	uri = fmt.Sprintf("mongodb+srv://%s:%s@cluster0.io5ut.mongodb.net/authentication?retryWrites=true", user, password)
+func SetDbUri(user, password, host string) {
+	uri = fmt.Sprintf("mongodb://%s:%s@%s:27017/authentication?maxPoolSize=20&w=majority", user, password, host)
 }

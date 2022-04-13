@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/authentication-app-server/api-services/auth"
+	"github.com/authentication-app-server/config"
 	"github.com/authentication-app-server/db"
 	"github.com/authentication-app-server/services"
 	"log"
@@ -17,8 +18,10 @@ func main() {
 		cloud      string
 		cloudKey   string
 		secret     string
+		dbHost     string
 		dbUser     string
 		dbPassword string
+		production bool
 	)
 
 	flag.StringVar(&cloud, "cloud", "", "cloud name")
@@ -26,13 +29,17 @@ func main() {
 	flag.StringVar(&secret, "secret", "", "cloud API secret")
 	flag.StringVar(&auth.ClientID, "client-id", "", "cloud app id")
 	flag.StringVar(&auth.ClientSecret, "client-secret", "", "Client secret key")
+	flag.StringVar(&dbHost, "db-host", "localhost", "Database host")
 	flag.StringVar(&dbUser, "db-user", "", "Db username")
 	flag.StringVar(&dbPassword, "db-password", "", "Db password")
+	flag.BoolVar(&production, "production", true, "Environment mode")
 	flag.Parse()
 
 	if flag.Lookup("test.v") == nil {
-		db.SetDbUri(dbUser, dbPassword)
+		config.AppConfig.Production = production
+		db.SetDbUri(dbUser, dbPassword, dbHost)
 	}
+
 	dbConn, err := db.ConnectToClient()
 	if err != nil {
 		panic(err)

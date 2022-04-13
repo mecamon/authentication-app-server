@@ -1,0 +1,13 @@
+version: "3.6"
+services:
+  goservice:
+    build: "."
+    ports:
+      - "8080:8080"
+    entrypoint: /usr/local/bin/app -cloud=${CLOUD} -cloud-key=${CLOUD_KEY} -secret=${SECRET} -client-id=${CLIENT_ID} -client-secret=${CLIENT_SECRET} -db-host=${DB_HOST} -db-user=${DB_USER} -db-password=${DB_PASSWORD}
+  nginx:
+    build: "./nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - "goservice"
