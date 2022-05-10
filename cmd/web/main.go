@@ -8,9 +8,10 @@ import (
 	"github.com/authentication-app-server/services"
 	"log"
 	"net/http"
+	"os"
 )
 
-const port = ":8080"
+const defaultPort = ":8080"
 
 func main() {
 
@@ -59,6 +60,11 @@ func main() {
 	err = services.NewCloudinaryInstance(cloud, cloudKey, secret)
 	if err != nil {
 		log.Println("Error creating cloudinary instance", err)
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
 	}
 
 	log.Println("Running server in port", port)
