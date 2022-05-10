@@ -11,8 +11,6 @@ import (
 	"os"
 )
 
-const defaultPort = ":8080"
-
 func main() {
 
 	var (
@@ -64,11 +62,11 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = defaultPort
+		port = "8080"
 	}
 
 	log.Println("Running server in port", port)
-	err = http.ListenAndServe(port, router)
+	err = http.ListenAndServe(":"+port, router)
 	if err != nil {
 		log.Fatal(err)
 	}
